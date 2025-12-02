@@ -17,7 +17,7 @@ public class IDGenerator {
             
             if (rs.next()) {
                 String lastId = rs.getString("client_id");
-                // Extract number from UZ-XXX format
+                // Extract number from UZ-001 format
                 String numberPart = lastId.substring(3);
                 int nextNumber = Integer.parseInt(numberPart) + 1;
                 return String.format("UZ-%03d", nextNumber);

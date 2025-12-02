@@ -1,8 +1,5 @@
 package UzimaBoreholeSystem.models;
 
-/**
- * Pump installation model with cost information
- */
 public class PumpInstallation {
     private String pumpType;
     private double cost;

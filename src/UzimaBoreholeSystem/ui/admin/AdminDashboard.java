@@ -5,16 +5,29 @@ import javax.swing.border.EmptyBorder;
 
 import UzimaBoreholeSystem.models.Staff;
 import UzimaBoreholeSystem.ui.login.LoginUI;
+import UzimaBoreholeSystem.services.ClientService;
+import UzimaBoreholeSystem.services.RevenueService;
+import UzimaBoreholeSystem.models.Client;
 
 import java.awt.*;
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class AdminDashboard extends JFrame {
     private final Staff staff;
     private JPanel contentPanel;
     private CardLayout cardLayout;
+    private final ClientService clientService;
+    private final RevenueService revenueService;
+    private final NumberFormat currencyFormat;
     
     public AdminDashboard(Staff staff) {
         this.staff = staff;
+        this.clientService = new ClientService();
+        this.revenueService = new RevenueService();
+        this.currencyFormat = NumberFormat.getCurrencyInstance(new Locale.Builder().setLanguage("en").setRegion("KE").build());
         
         setTitle("Admin Dashboard - " + staff.getName());
         setSize(1200, 800);
@@ -45,6 +58,7 @@ public class AdminDashboard extends JFrame {
         contentPanel.add(createDashboardView(), "dashboard");
         contentPanel.add(new AddClientForm(this), "addClient");
         contentPanel.add(new ClientTableView(), "viewClients");
+        contentPanel.add(createRevenueReportView(), "revenueReport");
         
         splitPane.setRightComponent(contentPanel);
         
@@ -105,6 +119,8 @@ public class AdminDashboard extends JFrame {
         panel.add(createMenuButton("Add Client", "addClient"));
         panel.add(Box.createVerticalStrut(10));
         panel.add(createMenuButton("View Clients", "viewClients"));
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(createMenuButton("Revenue Report", "revenueReport"));
         
         return panel;
     }
@@ -115,6 +131,8 @@ public class AdminDashboard extends JFrame {
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setBackground(new Color(25, 118, 210));
         button.setForeground(Color.WHITE);
+        button.setOpaque(true);
+        button.setBorderPainted(true);
         button.setFocusPainted(false);
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.addActionListener(e -> showView(viewName));
@@ -161,6 +179,180 @@ public class AdminDashboard extends JFrame {
         panel.add(infoArea, BorderLayout.CENTER);
         
         return panel;
+    }
+    
+    private JPanel createRevenueReportView() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
+        // Title
+        JLabel titleLabel = new JLabel("Revenue Report");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        titleLabel.setBorder(new EmptyBorder(0, 0, 20, 0));
+        
+        // Main content with scroll
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(Color.WHITE);
+        
+        // Summary Cards
+        JPanel summaryPanel = new JPanel(new GridLayout(1, 3, 15, 0));
+        summaryPanel.setBackground(Color.WHITE);
+        summaryPanel.setMaximumSize(new Dimension(1100, 120));
+        
+        double totalRevenue = clientService.getTotalRevenueAllServices();
+        double totalTax = clientService.getTotalTaxCollected();
+        int paidClients = clientService.getPaidClientsCount();
+        
+        summaryPanel.add(createStatCard("Total Revenue", currencyFormat.format(totalRevenue), new Color(76, 175, 80)));
+        summaryPanel.add(createStatCard("Tax Collected (16%)", currencyFormat.format(totalTax), new Color(243, 156, 18)));
+        summaryPanel.add(createStatCard("Paid Clients", String.valueOf(paidClients), new Color(25, 118, 210)));
+        
+        contentPanel.add(summaryPanel);
+        contentPanel.add(Box.createVerticalStrut(20));
+        
+        // Revenue by Service Type
+        contentPanel.add(createServiceRevenuePanel());
+        contentPanel.add(Box.createVerticalStrut(20));
+        
+        // Revenue by Customer Table
+        contentPanel.add(createCustomerRevenuePanel());
+        
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        
+        panel.add(titleLabel, BorderLayout.NORTH);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        
+        return panel;
+    }
+    
+    private JPanel createStatCard(String title, String value, Color color) {
+        JPanel card = new JPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setBackground(Color.WHITE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(color, 2),
+            new EmptyBorder(15, 15, 15, 15)
+        ));
+        
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        titleLabel.setForeground(new Color(127, 140, 141));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        JLabel valueLabel = new JLabel(value);
+        valueLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        valueLabel.setForeground(color);
+        valueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        card.add(titleLabel);
+        card.add(Box.createVerticalStrut(10));
+        card.add(valueLabel);
+        
+        return card;
+    }
+    
+    private JPanel createServiceRevenuePanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)), 
+                "Revenue by Service Type", 0, 0, new Font("Arial", Font.BOLD, 16)),
+            new EmptyBorder(15, 15, 15, 15)
+        ));
+        panel.setMaximumSize(new Dimension(1100, 350));
+        
+        JPanel gridPanel = new JPanel(new GridLayout(7, 2, 10, 10));
+        gridPanel.setBackground(Color.WHITE);
+        
+        double surveyRevenue = clientService.getTotalRevenueFromSurveyFees();
+        double localAuthorityRevenue = clientService.getTotalRevenueFromLocalAuthorityFees();
+        double drillingRevenue = clientService.getTotalRevenueFromDrilling();
+        double pumpRevenue = clientService.getTotalRevenueFromPumpInstallation();
+        double plumbingRevenue = clientService.getTotalRevenueFromPlumbing();
+        double depthChargeRevenue = clientService.getTotalRevenueFromDepthCharges();
+        
+        addRevenueRow(gridPanel, "Survey Fees:", surveyRevenue);
+        addRevenueRow(gridPanel, "Local Authority Fees:", localAuthorityRevenue);
+        addRevenueRow(gridPanel, "Drilling Services:", drillingRevenue);
+        addRevenueRow(gridPanel, "Pump Installation:", pumpRevenue);
+        addRevenueRow(gridPanel, "Plumbing Services:", plumbingRevenue);
+        addRevenueRow(gridPanel, "Depth Charges:", depthChargeRevenue);
+        
+        double subtotal = surveyRevenue + localAuthorityRevenue + drillingRevenue + 
+                         pumpRevenue + plumbingRevenue + depthChargeRevenue;
+        addRevenueRow(gridPanel, "Subtotal:", subtotal);
+        
+        panel.add(gridPanel, BorderLayout.CENTER);
+        
+        return panel;
+    }
+    
+    private JPanel createCustomerRevenuePanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)), 
+                "Revenue from Each Customer", 0, 0, new Font("Arial", Font.BOLD, 16)),
+            new EmptyBorder(15, 15, 15, 15)
+        ));
+        panel.setMaximumSize(new Dimension(1100, 400));
+        
+        String[] columnNames = {"Client ID", "Client Name", "Subtotal", "Tax (16%)", "Total Revenue", "Status"};
+        Object[][] data = getCustomerRevenueData();
+        
+        JTable table = new JTable(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        
+        table.setFont(new Font("Arial", Font.PLAIN, 12));
+        table.setRowHeight(25);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        table.getTableHeader().setBackground(new Color(25, 118, 210));
+        table.getTableHeader().setForeground(Color.WHITE);
+        
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new Dimension(1070, 300));
+        
+        panel.add(scrollPane, BorderLayout.CENTER);
+        
+        return panel;
+    }
+    
+    private Object[][] getCustomerRevenueData() {
+        List<Client> clients = clientService.getAllClients();
+        Object[][] data = new Object[clients.size()][6];
+        
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
+            data[i][0] = client.getClientId();
+            data[i][1] = client.getName();
+            data[i][2] = currencyFormat.format(client.getSubtotal());
+            data[i][3] = currencyFormat.format(client.getTaxPaid());
+            data[i][4] = currencyFormat.format(client.getTotalCost());
+            data[i][5] = client.getPaymentStatus();
+        }
+        
+        return data;
+    }
+    
+    private void addRevenueRow(JPanel panel, String label, double amount) {
+        JLabel lblLabel = new JLabel(label);
+        lblLabel.setFont(new Font("Arial", Font.BOLD, 13));
+        
+        JLabel lblValue = new JLabel(currencyFormat.format(amount));
+        lblValue.setFont(new Font("Arial", Font.PLAIN, 13));
+        lblValue.setHorizontalAlignment(SwingConstants.RIGHT);
+        
+        panel.add(lblLabel);
+        panel.add(lblValue);
     }
     
     private void logout() {

@@ -5,16 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import UzimaBoreholeSystem.database.DBConnection;
 
-/**
- * Revenue Service - Handles all revenue tracking and reporting
- * Provides comprehensive revenue analysis by service type, customer, and overall business performance
- */
 public class RevenueService {
-    
-    /**
-     * Get comprehensive revenue breakdown by all service categories
-     * @return Map containing revenue for each service type
-     */
+
     public Map<String, Double> getRevenueByServiceType() {
         Map<String, Double> revenueMap = new HashMap<>();
         
@@ -51,13 +43,9 @@ public class RevenueService {
         return revenueMap;
     }
     
-    /**
-     * Get revenue breakdown by client category (Industrial, Commercial, Domestic)
-     * @return Map containing revenue for each client category
-     */
     public Map<String, Double> getRevenueByClientCategory() {
         Map<String, Double> categoryRevenue = new HashMap<>();
-        
+
         String sql = "SELECT client_category, SUM(total_cost) as revenue " +
                     "FROM clients WHERE payment_status = 'Paid' " +
                     "GROUP BY client_category";
@@ -79,10 +67,6 @@ public class RevenueService {
         return categoryRevenue;
     }
     
-    /**
-     * Get revenue breakdown by drilling type
-     * @return Map containing revenue for each drilling type
-     */
     public Map<String, Double> getRevenueByDrillingType() {
         Map<String, Double> drillingRevenue = new HashMap<>();
         
@@ -107,10 +91,6 @@ public class RevenueService {
         return drillingRevenue;
     }
     
-    /**
-     * Get revenue breakdown by pump type
-     * @return Map containing revenue for each pump type
-     */
     public Map<String, Double> getRevenueByPumpType() {
         Map<String, Double> pumpRevenue = new HashMap<>();
         
@@ -135,10 +115,6 @@ public class RevenueService {
         return pumpRevenue;
     }
     
-    /**
-     * Generate a comprehensive business performance report
-     * @return Formatted string containing complete revenue analysis
-     */
     public String generateComprehensiveReport() {
         StringBuilder report = new StringBuilder();
         
@@ -266,10 +242,6 @@ public class RevenueService {
         return 0;
     }
     
-    /**
-     * Get count of pending clients
-     * @return Number of clients with pending payments
-     */
     private int getPendingClientsCount() {
         String sql = "SELECT COUNT(*) FROM clients WHERE payment_status = 'Pending'";
         try (Connection conn = DBConnection.getConnection();
@@ -283,11 +255,6 @@ public class RevenueService {
         }
         return 0;
     }
-    
-    /**
-     * Get total amount in pending payments
-     * @return Sum of all pending payment amounts
-     */
     public double getPendingPaymentAmount() {
         String sql = "SELECT SUM(total_cost) FROM clients WHERE payment_status = 'Pending'";
         try (Connection conn = DBConnection.getConnection();
@@ -302,12 +269,6 @@ public class RevenueService {
         return 0;
     }
     
-    /**
-     * Get revenue for a specific month
-     * @param month Month number (1-12)
-     * @param year Year
-     * @return Total revenue for the specified month
-     */
     public double getMonthlyRevenue(int month, int year) {
         String sql = "SELECT SUM(total_cost) FROM clients " +
                     "WHERE payment_status = 'Paid' " +
@@ -330,11 +291,6 @@ public class RevenueService {
         return 0;
     }
     
-    /**
-     * Get revenue for a specific year
-     * @param year Year
-     * @return Total revenue for the specified year
-     */
     public double getYearlyRevenue(int year) {
         String sql = "SELECT SUM(total_cost) FROM clients " +
                     "WHERE payment_status = 'Paid' " +

@@ -142,12 +142,15 @@ public class ClientDashboard extends JFrame {
         DepthCharge depthCharge = clientService.getDepthChargeByClientId(client.getClientId());
         PumpInstallation pump = clientService.getPumpInstallationByClientId(client.getClientId());
         
-        JPanel costsPanel = new JPanel(new GridLayout(8, 2, 10, 10));
+        JPanel costsPanel = new JPanel(new GridLayout(10, 2, 10, 10));
         costsPanel.setBackground(Color.WHITE);
         
         if (surveyFee != null) {
             addCostRow(costsPanel, "Survey Fee:", surveyFee.getAmount());
         }
+        
+        // Add local authority fee
+        addCostRow(costsPanel, "Local Authority Fee:", client.getLocalAuthorityFee());
         
         if (drilling != null) {
             addCostRow(costsPanel, "Drilling Fee:", drilling.getAmount());
@@ -165,14 +168,40 @@ public class ClientDashboard extends JFrame {
         card.add(costsPanel);
         card.add(Box.createVerticalStrut(10));
         
+        // Subtotal, Tax, and Total
+        JPanel summaryPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        summaryPanel.setBackground(Color.WHITE);
+        summaryPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
+        
+        // Subtotal
+        JLabel subtotalLabel = new JLabel("Subtotal:");
+        subtotalLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        JLabel subtotalValue = new JLabel(currencyFormat.format(client.getSubtotal()));
+        subtotalValue.setFont(new Font("Arial", Font.BOLD, 14));
+        summaryPanel.add(subtotalLabel);
+        summaryPanel.add(subtotalValue);
+        
+        // Tax (16%)
+        JLabel taxLabel = new JLabel("Tax (16%):");
+        taxLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        taxLabel.setForeground(new Color(243, 156, 18));
+        JLabel taxValue = new JLabel(currencyFormat.format(client.getTaxPaid()));
+        taxValue.setFont(new Font("Arial", Font.BOLD, 14));
+        taxValue.setForeground(new Color(243, 156, 18));
+        summaryPanel.add(taxLabel);
+        summaryPanel.add(taxValue);
+        
         // Total
-        JPanel totalPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        totalPanel.setBackground(Color.WHITE);
-        JLabel totalLabel = new JLabel("Total Cost: " + currencyFormat.format(client.getTotalCost()));
-        totalLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        JLabel totalLabel = new JLabel("Total Cost:");
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 16));
         totalLabel.setForeground(new Color(25, 118, 210));
-        totalPanel.add(totalLabel);
-        card.add(totalPanel);
+        JLabel totalValue = new JLabel(currencyFormat.format(client.getTotalCost()));
+        totalValue.setFont(new Font("Arial", Font.BOLD, 16));
+        totalValue.setForeground(new Color(25, 118, 210));
+        summaryPanel.add(totalLabel);
+        summaryPanel.add(totalValue);
+        
+        card.add(summaryPanel);
         
         return card;
     }

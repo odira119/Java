@@ -98,6 +98,8 @@ public class LoginUI extends JFrame {
         JButton loginButton = new JButton("Login");
         loginButton.setBackground(new Color(25, 118, 210));
         loginButton.setForeground(Color.WHITE);
+        loginButton.setOpaque(true);
+        loginButton.setBorderPainted(true);
         loginButton.setFocusPainted(false);
         loginButton.setFont(new Font("Arial", Font.BOLD, 14));
         loginButton.addActionListener(e -> handleClientLogin(clientIdField.getText(), phoneField.getText()));
@@ -118,6 +120,8 @@ public class LoginUI extends JFrame {
         JButton createAccountButton = new JButton("Create New Account");
         createAccountButton.setBackground(new Color(76, 175, 80));
         createAccountButton.setForeground(Color.WHITE);
+        createAccountButton.setOpaque(true);
+        createAccountButton.setBorderPainted(true);
         createAccountButton.setFocusPainted(false);
         createAccountButton.setFont(new Font("Arial", Font.BOLD, 14));
         createAccountButton.addActionListener(e -> openRegistrationForm());
@@ -166,6 +170,8 @@ public class LoginUI extends JFrame {
         JButton loginButton = new JButton("Login");
         loginButton.setBackground(new Color(25, 118, 210));
         loginButton.setForeground(Color.WHITE);
+        loginButton.setOpaque(true);
+        loginButton.setBorderPainted(true);
         loginButton.setFocusPainted(false);
         loginButton.setFont(new Font("Arial", Font.BOLD, 14));
         loginButton.addActionListener(e -> handleStaffLogin(staffIdField.getText(), 

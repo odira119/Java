@@ -1,11 +1,10 @@
-package ui.admin;
-
-import ui.login.LoginUI;
+package UzimaBoreholeSystem.ui.admin;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import UzimaBoreholeSystem.models.Staff;
+import UzimaBoreholeSystem.ui.login.LoginUI;
 
 import java.awt.*;
 

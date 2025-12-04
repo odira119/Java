@@ -303,4 +303,298 @@ public class ClientService {
         }
         return null;
     }
+    
+    // ============ REVENUE TRACKING METHODS ============
+    
+    /**
+     * Get total revenue from all services for all clients
+     * @return Total revenue including tax
+     */
+    public double getTotalRevenueAllServices() {
+        String sql = "SELECT SUM(total_cost) FROM clients WHERE payment_status = 'Paid'";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get total revenue from drilling services only
+     * @return Total revenue from drilling
+     */
+    public double getTotalRevenueFromDrilling() {
+        String sql = "SELECT SUM(drilling_fee) FROM clients WHERE payment_status = 'Paid'";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get total revenue from plumbing services only
+     * @return Total revenue from plumbing
+     */
+    public double getTotalRevenueFromPlumbing() {
+        String sql = "SELECT SUM(plumbing_fee) FROM clients WHERE payment_status = 'Paid'";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get total revenue from pump installation services only
+     * @return Total revenue from pump installations
+     */
+    public double getTotalRevenueFromPumpInstallation() {
+        String sql = "SELECT SUM(pump_installation_fee) FROM clients WHERE payment_status = 'Paid'";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get total revenue from depth charges only
+     * @return Total revenue from depth charges
+     */
+    public double getTotalRevenueFromDepthCharges() {
+        String sql = "SELECT SUM(depth_charge) FROM clients WHERE payment_status = 'Paid'";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get total revenue from survey and local authority fees
+     * @return Total revenue from survey fees and local authority fees combined
+     */
+    public double getTotalRevenueFromSurveyAndLocalAuthority() {
+        String sql = "SELECT SUM(survey_fee + local_authority_fee) FROM clients WHERE payment_status = 'Paid'";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get total revenue from survey fees only
+     * @return Total revenue from survey fees
+     */
+    public double getTotalRevenueFromSurveyFees() {
+        String sql = "SELECT SUM(survey_fee) FROM clients WHERE payment_status = 'Paid'";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get total revenue from local authority fees only
+     * @return Total revenue from local authority fees
+     */
+    public double getTotalRevenueFromLocalAuthorityFees() {
+        String sql = "SELECT SUM(local_authority_fee) FROM clients WHERE payment_status = 'Paid'";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get total tax collected from all clients
+     * @return Total tax amount (16% of subtotal)
+     */
+    public double getTotalTaxCollected() {
+        String sql = "SELECT SUM(tax_paid) FROM clients WHERE payment_status = 'Paid'";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get revenue from a specific customer by client ID
+     * @param clientId The client's unique identifier
+     * @return Total revenue from this specific customer
+     */
+    public double getRevenueFromCustomer(String clientId) {
+        String sql = "SELECT total_cost FROM clients WHERE client_id = ? AND payment_status = 'Paid'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, clientId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get tax paid by a specific customer
+     * @param clientId The client's unique identifier
+     * @return Tax amount paid by this customer
+     */
+    public double getTaxPaidByCustomer(String clientId) {
+        Client client = getClientById(clientId);
+        if (client != null) {
+            return client.getTaxPaid();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get detailed revenue breakdown by service type
+     * Returns a formatted string with all revenue categories
+     * @return Formatted revenue report
+     */
+    public String getRevenueBreakdownReport() {
+        StringBuilder report = new StringBuilder();
+        report.append("========== REVENUE BREAKDOWN REPORT ==========\n\n");
+        
+        double surveyRevenue = getTotalRevenueFromSurveyFees();
+        double localAuthorityRevenue = getTotalRevenueFromLocalAuthorityFees();
+        double drillingRevenue = getTotalRevenueFromDrilling();
+        double pumpRevenue = getTotalRevenueFromPumpInstallation();
+        double plumbingRevenue = getTotalRevenueFromPlumbing();
+        double depthChargeRevenue = getTotalRevenueFromDepthCharges();
+        double totalTax = getTotalTaxCollected();
+        double totalRevenue = getTotalRevenueAllServices();
+        
+        report.append(String.format("Survey Fees:              KSh %,.2f\n", surveyRevenue));
+        report.append(String.format("Local Authority Fees:     KSh %,.2f\n", localAuthorityRevenue));
+        report.append(String.format("Drilling Services:        KSh %,.2f\n", drillingRevenue));
+        report.append(String.format("Pump Installation:        KSh %,.2f\n", pumpRevenue));
+        report.append(String.format("Plumbing Services:        KSh %,.2f\n", plumbingRevenue));
+        report.append(String.format("Depth Charges:            KSh %,.2f\n", depthChargeRevenue));
+        report.append("----------------------------------------------\n");
+        report.append(String.format("Subtotal (All Services):  KSh %,.2f\n", 
+            surveyRevenue + localAuthorityRevenue + drillingRevenue + pumpRevenue + plumbingRevenue + depthChargeRevenue));
+        report.append(String.format("Tax Collected (16%%):      KSh %,.2f\n", totalTax));
+        report.append("==============================================\n");
+        report.append(String.format("TOTAL REVENUE:            KSh %,.2f\n", totalRevenue));
+        report.append("==============================================\n");
+        
+        return report.toString();
+    }
+    
+    /**
+     * Get revenue summary for a specific customer
+     * @param clientId The client's unique identifier
+     * @return Formatted revenue summary for the customer
+     */
+    public String getCustomerRevenueReport(String clientId) {
+        Client client = getClientById(clientId);
+        if (client == null) {
+            return "Client not found.";
+        }
+        
+        StringBuilder report = new StringBuilder();
+        report.append("========== CUSTOMER REVENUE REPORT ==========\n\n");
+        report.append(String.format("Client ID:        %s\n", client.getClientId()));
+        report.append(String.format("Client Name:      %s\n", client.getName()));
+        report.append(String.format("Payment Status:   %s\n\n", client.getPaymentStatus()));
+        
+        report.append("Service Breakdown:\n");
+        report.append(String.format("  Survey Fee:              KSh %,.2f\n", client.getSurveyFee()));
+        report.append(String.format("  Local Authority Fee:     KSh %,.2f\n", client.getLocalAuthorityFee()));
+        report.append(String.format("  Drilling Service:        KSh %,.2f\n", client.getDrillingFee()));
+        report.append(String.format("  Pump Installation:       KSh %,.2f\n", client.getPumpInstallationFee()));
+        report.append(String.format("  Plumbing Service:        KSh %,.2f\n", client.getPlumbingFee()));
+        report.append(String.format("  Depth Charge:            KSh %,.2f\n", client.getDepthCharge()));
+        report.append("----------------------------------------------\n");
+        report.append(String.format("Subtotal:                  KSh %,.2f\n", client.getSubtotal()));
+        report.append(String.format("Tax (16%%):                 KSh %,.2f\n", client.getTaxPaid()));
+        report.append("==============================================\n");
+        report.append(String.format("TOTAL COST:                KSh %,.2f\n", client.getTotalCost()));
+        report.append("==============================================\n");
+        
+        return report.toString();
+    }
+    
+    /**
+     * Get count of paid clients
+     * @return Number of clients who have paid
+     */
+    public int getPaidClientsCount() {
+        String sql = "SELECT COUNT(*) FROM clients WHERE payment_status = 'Paid'";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    /**
+     * Get average revenue per paid customer
+     * @return Average revenue per customer
+     */
+    public double getAverageRevenuePerCustomer() {
+        int paidClients = getPaidClientsCount();
+        if (paidClients == 0) return 0;
+        return getTotalRevenueAllServices() / paidClients;
+    }
 }

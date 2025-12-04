@@ -1,4 +1,4 @@
-package ui.client;
+package UzimaBoreholeSystem.ui.client;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -207,7 +207,7 @@ public class ClientDashboard extends JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             this.dispose();
             SwingUtilities.invokeLater(() -> {
-                ui.login.LoginUI loginUI = new ui.login.LoginUI();
+                UzimaBoreholeSystem.ui.login.LoginUI loginUI = new UzimaBoreholeSystem.ui.login.LoginUI();
                 loginUI.setVisible(true);
             });
         }

@@ -1,4 +1,4 @@
-package ui.admin;
+package UzimaBoreholeSystem.ui.admin;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

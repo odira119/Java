@@ -1,12 +1,10 @@
-package ui.admin;
-
-import utils.IDGenerator;
+package UzimaBoreholeSystem.ui.admin;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import UzimaBoreholeSystem.services.ClientService;
-
+import UzimaBoreholeSystem.utils.IDGenerator;
 import UzimaBoreholeSystem.models.Client;
 
 import java.awt.*;

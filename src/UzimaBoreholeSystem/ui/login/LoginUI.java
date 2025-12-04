@@ -1,14 +1,12 @@
-package ui.login;
-
-import ui.admin.AdminDashboard;
-import ui.client.ClientDashboard;
+package UzimaBoreholeSystem.ui.login;
 
 import javax.swing.*;
 
 import UzimaBoreholeSystem.services.AuthService;
 import UzimaBoreholeSystem.models.Client;
 import UzimaBoreholeSystem.services.StaffService;
-
+import UzimaBoreholeSystem.ui.admin.AdminDashboard;
+import UzimaBoreholeSystem.ui.client.ClientDashboard;
 import UzimaBoreholeSystem.models.Staff;
 
 import java.awt.*;
@@ -131,7 +129,7 @@ public class LoginUI extends JFrame {
     private void openRegistrationForm() {
         this.dispose();
         SwingUtilities.invokeLater(() -> {
-            ui.client.ClientRegistrationForm registrationForm = new ui.client.ClientRegistrationForm();
+            UzimaBoreholeSystem.ui.client.ClientRegistrationForm registrationForm = new UzimaBoreholeSystem.ui.client.ClientRegistrationForm();
             registrationForm.setVisible(true);
         });
     }

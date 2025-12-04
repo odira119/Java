@@ -1,15 +1,14 @@
-package ui.client;
+package UzimaBoreholeSystem.ui.client;
 
-import ui.login.LoginUI;
-import utils.IDGenerator;
+import UzimaBoreholeSystem.utils.IDGenerator;
+import UzimaBoreholeSystem.models.Client;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import UzimaBoreholeSystem.services.CalculationService;
 import UzimaBoreholeSystem.services.ClientService;
-
-import UzimaBoreholeSystem.models.Client;
+import UzimaBoreholeSystem.ui.login.LoginUI;
 
 import java.awt.*;
 

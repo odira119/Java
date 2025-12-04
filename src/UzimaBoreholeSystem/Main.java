@@ -1,7 +1,7 @@
 package UzimaBoreholeSystem;
-import ui.login.LoginUI;
 import javax.swing.*;
 import UzimaBoreholeSystem.database.DatabaseInitializer;
+import UzimaBoreholeSystem.ui.login.LoginUI;
 
 public class Main {
     

@@ -1,4 +1,4 @@
-package utils;
+package UzimaBoreholeSystem.utils;
 
 import java.sql.*;
 

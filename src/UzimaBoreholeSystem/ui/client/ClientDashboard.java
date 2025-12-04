@@ -61,7 +61,10 @@ public class ClientDashboard extends JFrame {
         JButton logoutButton = new JButton("Logout");
         logoutButton.setBackground(new Color(211, 47, 47));
         logoutButton.setForeground(Color.WHITE);
+        logoutButton.setOpaque(true);
+        logoutButton.setBorderPainted(false);
         logoutButton.setFocusPainted(false);
+        logoutButton.setPreferredSize(new Dimension(100, 35));
         logoutButton.addActionListener(e -> logout());
         
         panel.add(titleLabel, BorderLayout.WEST);

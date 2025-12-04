@@ -130,15 +130,21 @@ public class AddClientForm extends JPanel {
         JButton saveButton = new JButton("Save Client");
         saveButton.setBackground(new Color(76, 175, 80));
         saveButton.setForeground(Color.WHITE);
+        saveButton.setOpaque(true);
+        saveButton.setBorderPainted(false);
         saveButton.setFocusPainted(false);
         saveButton.setFont(new Font("Arial", Font.BOLD, 14));
+        saveButton.setPreferredSize(new Dimension(150, 40));
         saveButton.addActionListener(e -> saveClient());
         
         JButton clearButton = new JButton("Clear Form");
         clearButton.setBackground(new Color(158, 158, 158));
         clearButton.setForeground(Color.WHITE);
+        clearButton.setOpaque(true);
+        clearButton.setBorderPainted(false);
         clearButton.setFocusPainted(false);
         clearButton.setFont(new Font("Arial", Font.BOLD, 14));
+        clearButton.setPreferredSize(new Dimension(150, 40));
         clearButton.addActionListener(e -> clearForm());
         
         buttonPanel.add(saveButton);

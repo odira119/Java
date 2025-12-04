@@ -99,9 +99,10 @@ public class LoginUI extends JFrame {
         loginButton.setBackground(new Color(25, 118, 210));
         loginButton.setForeground(Color.WHITE);
         loginButton.setOpaque(true);
-        loginButton.setBorderPainted(true);
+        loginButton.setBorderPainted(false);
         loginButton.setFocusPainted(false);
         loginButton.setFont(new Font("Arial", Font.BOLD, 14));
+        loginButton.setPreferredSize(new Dimension(250, 40));
         loginButton.addActionListener(e -> handleClientLogin(clientIdField.getText(), phoneField.getText()));
         panel.add(loginButton, gbc);
         
@@ -121,9 +122,10 @@ public class LoginUI extends JFrame {
         createAccountButton.setBackground(new Color(76, 175, 80));
         createAccountButton.setForeground(Color.WHITE);
         createAccountButton.setOpaque(true);
-        createAccountButton.setBorderPainted(true);
+        createAccountButton.setBorderPainted(false);
         createAccountButton.setFocusPainted(false);
         createAccountButton.setFont(new Font("Arial", Font.BOLD, 14));
+        createAccountButton.setPreferredSize(new Dimension(250, 40));
         createAccountButton.addActionListener(e -> openRegistrationForm());
         panel.add(createAccountButton, gbc);
         
@@ -171,9 +173,10 @@ public class LoginUI extends JFrame {
         loginButton.setBackground(new Color(25, 118, 210));
         loginButton.setForeground(Color.WHITE);
         loginButton.setOpaque(true);
-        loginButton.setBorderPainted(true);
+        loginButton.setBorderPainted(false);
         loginButton.setFocusPainted(false);
         loginButton.setFont(new Font("Arial", Font.BOLD, 14));
+        loginButton.setPreferredSize(new Dimension(250, 40));
         loginButton.addActionListener(e -> handleStaffLogin(staffIdField.getText(), 
             new String(passwordField.getPassword())));
         panel.add(loginButton, gbc);

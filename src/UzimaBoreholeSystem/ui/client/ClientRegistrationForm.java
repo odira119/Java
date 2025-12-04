@@ -15,6 +15,7 @@ import java.awt.*;
 public class ClientRegistrationForm extends JFrame {
     private final ClientService clientService;
     private final CalculationService calculationService;
+    private final String callerSource; // "login" or "admin"
     
     private JTextField nameField;
     private JTextField phoneField;
@@ -30,8 +31,13 @@ public class ClientRegistrationForm extends JFrame {
     private JSpinner outletsSpinner;
     
     public ClientRegistrationForm() {
+        this("login");
+    }
+    
+    public ClientRegistrationForm(String callerSource) {
         this.clientService = new ClientService();
         this.calculationService = new CalculationService();
+        this.callerSource = callerSource;
         
         setTitle("Client Registration - Borehole Details");
         setSize(700, 850);
@@ -175,21 +181,25 @@ public class ClientRegistrationForm extends JFrame {
         JButton submitButton = new JButton("Submit Registration");
         submitButton.setBackground(new Color(76, 175, 80));
         submitButton.setForeground(Color.WHITE);
+        submitButton.setOpaque(true);
+        submitButton.setBorderPainted(false);
         submitButton.setFocusPainted(false);
         submitButton.setFont(new Font("Arial", Font.BOLD, 14));
         submitButton.setPreferredSize(new Dimension(200, 40));
         submitButton.addActionListener(e -> handleRegistration());
         
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.setBackground(new Color(158, 158, 158));
-        cancelButton.setForeground(Color.WHITE);
-        cancelButton.setFocusPainted(false);
-        cancelButton.setFont(new Font("Arial", Font.BOLD, 14));
-        cancelButton.setPreferredSize(new Dimension(120, 40));
-        cancelButton.addActionListener(e -> backToLogin());
+        JButton backButton = new JButton("Back");
+        backButton.setBackground(new Color(158, 158, 158));
+        backButton.setForeground(Color.WHITE);
+        backButton.setOpaque(true);
+        backButton.setBorderPainted(false);
+        backButton.setFocusPainted(false);
+        backButton.setFont(new Font("Arial", Font.BOLD, 14));
+        backButton.setPreferredSize(new Dimension(120, 40));
+        backButton.addActionListener(e -> goBack());
         
         buttonPanel.add(submitButton);
-        buttonPanel.add(cancelButton);
+        buttonPanel.add(backButton);
         
         panel.add(buttonPanel, gbc);
         
@@ -279,6 +289,27 @@ public class ClientRegistrationForm extends JFrame {
             JOptionPane.showMessageDialog(this, 
                 "Error during registration:\n" + e.getClass().getName() + "\n" + e.getMessage(), 
                 "Registration Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void goBack() {
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to go back? Any unsaved data will be lost.", 
+            "Confirm", JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            this.dispose();
+            SwingUtilities.invokeLater(() -> {
+                if ("admin".equals(callerSource)) {
+                    // Return to admin dashboard - need to create a staff object
+                    // For now, just reopen login and they can log back in as admin
+                    LoginUI loginUI = new LoginUI();
+                    loginUI.setVisible(true);
+                } else {
+                    LoginUI loginUI = new LoginUI();
+                    loginUI.setVisible(true);
+                }
+            });
         }
     }
     

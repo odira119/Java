@@ -55,8 +55,6 @@ public class AdminDashboard extends JFrame {
         contentPanel.setBackground(Color.WHITE);
         
         // Add different views
-        contentPanel.add(createDashboardView(), "dashboard");
-        contentPanel.add(new AddClientForm(this), "addClient");
         contentPanel.add(new ClientTableView(), "viewClients");
         contentPanel.add(createRevenueReportView(), "revenueReport");
         
@@ -66,6 +64,9 @@ public class AdminDashboard extends JFrame {
         mainPanel.add(splitPane, BorderLayout.CENTER);
         
         add(mainPanel);
+        
+        // Show View Clients by default
+        showView("viewClients");
     }
     
     private JPanel createHeaderPanel() {
@@ -88,7 +89,10 @@ public class AdminDashboard extends JFrame {
         JButton logoutButton = new JButton("Logout");
         logoutButton.setBackground(new Color(211, 47, 47));
         logoutButton.setForeground(Color.WHITE);
+        logoutButton.setOpaque(true);
+        logoutButton.setBorderPainted(false);
         logoutButton.setFocusPainted(false);
+        logoutButton.setPreferredSize(new Dimension(100, 35));
         logoutButton.addActionListener(e -> logout());
         
         rightPanel.add(staffLabel);
@@ -114,8 +118,6 @@ public class AdminDashboard extends JFrame {
         panel.add(Box.createVerticalStrut(20));
         
         // Menu buttons
-        panel.add(createMenuButton("Dashboard", "dashboard"));
-        panel.add(Box.createVerticalStrut(10));
         panel.add(createMenuButton("Add Client", "addClient"));
         panel.add(Box.createVerticalStrut(10));
         panel.add(createMenuButton("View Clients", "viewClients"));
@@ -132,10 +134,16 @@ public class AdminDashboard extends JFrame {
         button.setBackground(new Color(25, 118, 210));
         button.setForeground(Color.WHITE);
         button.setOpaque(true);
-        button.setBorderPainted(true);
+        button.setBorderPainted(false);
         button.setFocusPainted(false);
         button.setFont(new Font("Arial", Font.BOLD, 14));
-        button.addActionListener(e -> showView(viewName));
+        
+        if (viewName.equals("addClient")) {
+            button.addActionListener(e -> openClientRegistrationForm());
+        } else {
+            button.addActionListener(e -> showView(viewName));
+        }
+        
         return button;
     }
     
@@ -155,30 +163,13 @@ public class AdminDashboard extends JFrame {
         }
     }
     
-    private JPanel createDashboardView() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.WHITE);
-        panel.setBorder(new EmptyBorder(30, 30, 30, 30));
-        
-        JLabel welcomeLabel = new JLabel("Welcome to Admin Dashboard");
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        
-        JTextArea infoArea = new JTextArea();
-        infoArea.setText("\nQuick Stats:\n\n" +
-                        "• Use 'Add Client' to register new clients\n" +
-                        "• Use 'View Clients' to see all registered clients\n" +
-                        "• All costs are calculated automatically\n" +
-                        "• Client IDs are generated in format UZ-XXX\n");
-        infoArea.setEditable(false);
-        infoArea.setFont(new Font("Arial", Font.PLAIN, 16));
-        infoArea.setBackground(Color.WHITE);
-        infoArea.setBorder(new EmptyBorder(20, 0, 0, 0));
-        
-        panel.add(welcomeLabel, BorderLayout.NORTH);
-        panel.add(infoArea, BorderLayout.CENTER);
-        
-        return panel;
+    private void openClientRegistrationForm() {
+        this.dispose();
+        SwingUtilities.invokeLater(() -> {
+            UzimaBoreholeSystem.ui.client.ClientRegistrationForm registrationForm = 
+                new UzimaBoreholeSystem.ui.client.ClientRegistrationForm("admin");
+            registrationForm.setVisible(true);
+        });
     }
     
     private JPanel createRevenueReportView() {

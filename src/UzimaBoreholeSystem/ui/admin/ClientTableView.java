@@ -58,13 +58,19 @@ public class ClientTableView extends JPanel {
         JButton searchButton = new JButton("Search");
         searchButton.setBackground(new Color(25, 118, 210));
         searchButton.setForeground(Color.WHITE);
+        searchButton.setOpaque(true);
+        searchButton.setBorderPainted(false);
         searchButton.setFocusPainted(false);
+        searchButton.setPreferredSize(new Dimension(100, 35));
         searchButton.addActionListener(e -> searchClients());
         
         JButton refreshButton = new JButton("Refresh");
         refreshButton.setBackground(new Color(76, 175, 80));
         refreshButton.setForeground(Color.WHITE);
+        refreshButton.setOpaque(true);
+        refreshButton.setBorderPainted(false);
         refreshButton.setFocusPainted(false);
+        refreshButton.setPreferredSize(new Dimension(100, 35));
         refreshButton.addActionListener(e -> loadClients());
         
         searchPanel.add(searchLabel);

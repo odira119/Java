@@ -6,27 +6,23 @@ import javax.swing.border.EmptyBorder;
 import UzimaBoreholeSystem.models.Staff;
 import UzimaBoreholeSystem.ui.login.LoginUI;
 import UzimaBoreholeSystem.services.ClientService;
-import UzimaBoreholeSystem.services.RevenueService;
 import UzimaBoreholeSystem.models.Client;
 
 import java.awt.*;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class AdminDashboard extends JFrame {
     private final Staff staff;
     private JPanel contentPanel;
     private CardLayout cardLayout;
     private final ClientService clientService;
-    private final RevenueService revenueService;
     private final NumberFormat currencyFormat;
     
     public AdminDashboard(Staff staff) {
         this.staff = staff;
         this.clientService = new ClientService();
-        this.revenueService = new RevenueService();
         this.currencyFormat = NumberFormat.getCurrencyInstance(new Locale.Builder().setLanguage("en").setRegion("KE").build());
         
         setTitle("Admin Dashboard - " + staff.getName());

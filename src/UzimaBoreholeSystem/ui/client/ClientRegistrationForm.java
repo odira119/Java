@@ -312,18 +312,4 @@ public class ClientRegistrationForm extends JFrame {
             });
         }
     }
-    
-    private void backToLogin() {
-        int confirm = JOptionPane.showConfirmDialog(this, 
-            "Are you sure you want to cancel registration?", 
-            "Confirm Cancel", JOptionPane.YES_NO_OPTION);
-        
-        if (confirm == JOptionPane.YES_OPTION) {
-            this.dispose();
-            SwingUtilities.invokeLater(() -> {
-                LoginUI loginUI = new LoginUI();
-                loginUI.setVisible(true);
-            });
-        }
-    }
 }

@@ -4,7 +4,7 @@ import java.awt.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class PhoneBillingGUI extends JFrame {
+public class PhoneBillingSystem extends JFrame {
 
     // Modern color scheme
     private static final Color PRIMARY_COLOR = new Color(41, 128, 185);
@@ -24,7 +24,7 @@ public class PhoneBillingGUI extends JFrame {
 
     private LocalTime startTime, endTime;
 
-    public PhoneBillingGUI() {
+    public PhoneBillingSystem() {
         setTitle("Phone Billing System");
         setSize(520, 780);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -244,7 +244,7 @@ public class PhoneBillingGUI extends JFrame {
             ratePerSecond = sameNetwork ? (4.00 / 60.0) : (10.00 / 60.0);
         } else {
             tariffType = "Night Tariff (6PM - 8AM)";
-            ratePerSecond = sameNetwork ? (2.00 / 60.0) : (5.00 / 60.0);
+            ratePerSecond = sameNetwork ? (3.00 / 60.0) : (5.00 / 60.0);
         }
 
         // Calculate total cost
@@ -299,6 +299,6 @@ public class PhoneBillingGUI extends JFrame {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) {}
 
-        SwingUtilities.invokeLater(() -> new PhoneBillingGUI().setVisible(true));
+        SwingUtilities.invokeLater(() -> new PhoneBillingSystem().setVisible(true));
     }
 }

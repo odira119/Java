@@ -2,7 +2,7 @@ import javax.swing.*;
 
 public class SwingMenu{
     public static void main(String[]args){
-        SwingMenu s=new SwingMenu();
+        new SwingMenu();
     }
 
     public SwingMenu(){

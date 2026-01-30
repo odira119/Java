@@ -44,13 +44,13 @@ public class Add {
 
         // Button action
         addButton.addActionListener(new ActionListener() {
-            public void actionPerformed(nEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 int x = Integer.parseInt(textX.getText());
                 int y = Integer.parseInt(textY.getText());
                 int sum = x + y;
                 resultField.setText(String.valueOf(sum));
-        }
-    });
+            }
+        });
        
         frame.setVisible(true);
     }

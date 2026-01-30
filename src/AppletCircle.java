@@ -1,15 +1,21 @@
-import java.applet.Applet;
-import java.awt.Graphics;
-import java.awt.Color;
+import javax.swing.*;
+import java.awt.*;
 
-public class AppletCircle extends Applet {
-
-    public void init() {
-        setSize(500, 500);
-        setBackground(Color.WHITE);
+public class AppletCircle {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Draw Circle");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(500, 500);
+        frame.setBackground(Color.WHITE);
+        frame.add(new CirclePanel());
+        frame.setVisible(true);
     }
+}
 
-    public void paint(Graphics g) {
+class CirclePanel extends JPanel {
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         g.setColor(Color.BLACK);
         int radius = 185;   // 5 cm approx
         int diameter = radius * 2;

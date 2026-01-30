@@ -44,7 +44,7 @@ public class Add {
 
         // Button action
         addButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(nEvent e) {
                 int x = Integer.parseInt(textX.getText());
                 int y = Integer.parseInt(textY.getText());
                 int sum = x + y;

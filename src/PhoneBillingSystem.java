@@ -63,7 +63,7 @@ public class PhoneBillingSystem extends JFrame {
         // Timer for call duration
         callTimer = new Timer(1000, e -> updateTimer());
 
-        // Button actions
+        // Button 
         startBtn.addActionListener(e -> startCall());
         endBtn.addActionListener(e -> endCall());
     }

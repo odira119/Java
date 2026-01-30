@@ -6,7 +6,7 @@ import UzimaBoreholeSystem.ui.login.LoginUI;
 public class Main {
     
     public static void main(String[] args) {
-        try {
+        try {  
     
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             

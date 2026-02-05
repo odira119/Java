@@ -39,39 +39,70 @@ public class ClientTableView extends JPanel {
         // Title and search panel
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.WHITE);
+        topPanel.setBorder(new EmptyBorder(10, 0, 20, 0));
         
-        JLabel titleLabel = new JLabel("Client List");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        JLabel titleLabel = new JLabel("📋 Client Database");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        titleLabel.setForeground(new Color(52, 73, 94));
         topPanel.add(titleLabel, BorderLayout.NORTH);
         
         // Search panel
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 5));
         searchPanel.setBackground(Color.WHITE);
-        searchPanel.setBorder(new EmptyBorder(10, 0, 10, 0));
+        searchPanel.setBorder(new EmptyBorder(15, 0, 10, 0));
         
-        JLabel searchLabel = new JLabel("Search:");
-        searchLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        JLabel searchLabel = new JLabel("🔍 Search:");
+        searchLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        searchLabel.setForeground(new Color(52, 73, 94));
         
-        searchField = new JTextField(30);
-        searchField.setFont(new Font("Arial", Font.PLAIN, 14));
+        searchField = new JTextField(35);
+        searchField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 2),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
         
-        JButton searchButton = new JButton("Search");
-        searchButton.setBackground(new Color(25, 118, 210));
+        JButton searchButton = new JButton("🔍 Search");
+        searchButton.setBackground(new Color(52, 152, 219));
         searchButton.setForeground(Color.WHITE);
         searchButton.setOpaque(true);
         searchButton.setBorderPainted(false);
         searchButton.setFocusPainted(false);
-        searchButton.setPreferredSize(new Dimension(100, 35));
+        searchButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        searchButton.setPreferredSize(new Dimension(120, 38));
+        searchButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         searchButton.addActionListener(e -> searchClients());
         
-        JButton refreshButton = new JButton("Refresh");
-        refreshButton.setBackground(new Color(76, 175, 80));
+        // Add hover effect
+        searchButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                searchButton.setBackground(new Color(41, 128, 185));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                searchButton.setBackground(new Color(52, 152, 219));
+            }
+        });
+        
+        JButton refreshButton = new JButton("↻ Refresh");
+        refreshButton.setBackground(new Color(46, 204, 113));
         refreshButton.setForeground(Color.WHITE);
         refreshButton.setOpaque(true);
         refreshButton.setBorderPainted(false);
         refreshButton.setFocusPainted(false);
-        refreshButton.setPreferredSize(new Dimension(100, 35));
+        refreshButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        refreshButton.setPreferredSize(new Dimension(120, 38));
+        refreshButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         refreshButton.addActionListener(e -> loadClients());
+        
+        // Add hover effect
+        refreshButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                refreshButton.setBackground(new Color(39, 174, 96));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                refreshButton.setBackground(new Color(46, 204, 113));
+            }
+        });
         
         searchPanel.add(searchLabel);
         searchPanel.add(searchField);
@@ -91,15 +122,23 @@ public class ClientTableView extends JPanel {
         };
         
         clientTable = new JTable(tableModel);
-        clientTable.setFont(new Font("Arial", Font.PLAIN, 12));
-        clientTable.setRowHeight(30);
-        clientTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
-        clientTable.getTableHeader().setBackground(new Color(25, 118, 210));
+        clientTable.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        clientTable.setRowHeight(35);
+        clientTable.setGridColor(new Color(236, 240, 241));
+        clientTable.setShowGrid(true);
+        clientTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
+        clientTable.getTableHeader().setBackground(new Color(52, 73, 94));
         clientTable.getTableHeader().setForeground(Color.WHITE);
+        clientTable.getTableHeader().setPreferredSize(new Dimension(0, 40));
         clientTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        clientTable.setSelectionBackground(new Color(174, 214, 241));
+        clientTable.setSelectionForeground(new Color(44, 62, 80));
         
         JScrollPane scrollPane = new JScrollPane(clientTable);
-        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        scrollPane.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 2),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
         
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(scrollPane, BorderLayout.CENTER);

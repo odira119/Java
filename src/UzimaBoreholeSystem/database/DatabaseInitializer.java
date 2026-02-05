@@ -44,6 +44,7 @@ public class DatabaseInitializer {
             "address VARCHAR(200)," +
             "phone VARCHAR(20)," +
             "email VARCHAR(100)," +
+            "password VARCHAR(100)," +
             "client_category VARCHAR(20)," +
             "borehole_location VARCHAR(100)," +
             "depth_or_height INT," +
@@ -106,6 +107,14 @@ public class DatabaseInitializer {
                 stmt.executeUpdate(query);
             }
             System.out.println("All tables created successfully!");
+            
+            // Add password column to clients table if it doesn't exist (for existing databases)
+            try {
+                stmt.executeUpdate("ALTER TABLE clients ADD COLUMN password VARCHAR(100) AFTER email");
+                System.out.println("Added password column to clients table.");
+            } catch (SQLException e) {
+                // Column already exists - ignore the error
+            }
         } catch (SQLException e) {
             System.err.println("Error creating tables: " + e.getMessage());
             e.printStackTrace();

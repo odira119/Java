@@ -20,6 +20,8 @@ public class ClientRegistrationForm extends JFrame {
     private JTextField nameField;
     private JTextField phoneField;
     private JTextField emailField;
+    private JPasswordField passwordField;
+    private JPasswordField confirmPasswordField;
     private JTextField locationField;
     private JComboBox<String> categoryCombo;
     private JComboBox<String> drillingTypeCombo;
@@ -39,8 +41,9 @@ public class ClientRegistrationForm extends JFrame {
         this.calculationService = new CalculationService();
         this.callerSource = callerSource;
         
-        setTitle("Client Registration - Borehole Details");
-        setSize(700, 850);
+        setTitle("Uzima Borehole System - Client Registration");
+        setSize(1350, 780);
+        setMinimumSize(new Dimension(1250, 700));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
@@ -53,15 +56,26 @@ public class ClientRegistrationForm extends JFrame {
         
         // Header
         JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(25, 118, 210));
-        headerPanel.setPreferredSize(new Dimension(700, 70));
+        headerPanel.setBackground(new Color(41, 128, 185));
+        headerPanel.setPreferredSize(new Dimension(1400, 65));
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         
-        JLabel titleLabel = new JLabel("Register & Submit Borehole Details");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        JLabel subtitleLabel = new JLabel("New Client Registration");
+        subtitleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        subtitleLabel.setForeground(new Color(236, 240, 241));
+        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        JLabel titleLabel = new JLabel("📝 Register & Submit Borehole Details");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         titleLabel.setForeground(Color.WHITE);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        headerPanel.add(subtitleLabel);
+        headerPanel.add(Box.createVerticalStrut(5));
         headerPanel.add(titleLabel);
         
-        // Form panel with scroll
+        // Form panel with scroll pane
         JPanel formPanel = createFormPanel();
         JScrollPane scrollPane = new JScrollPane(formPanel);
         scrollPane.setBorder(null);
@@ -74,155 +88,299 @@ public class ClientRegistrationForm extends JFrame {
     }
     
     private JPanel createFormPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(Color.WHITE);
-        panel.setBorder(new EmptyBorder(30, 50, 30, 50));
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(Color.WHITE);
+        mainPanel.setBorder(new EmptyBorder(15, 25, 15, 25));
+        
+        // Create two-column layout panel
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(Color.WHITE);
         
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.WEST;
         
-        int row = 0;
+        // LEFT COLUMN - Personal Information
+        JPanel leftPanel = createStyledPanel("👤 PERSONAL INFORMATION");
+        JPanel leftFields = new JPanel(new GridBagLayout());
+        leftFields.setBackground(Color.WHITE);
+        GridBagConstraints leftGbc = new GridBagConstraints();
+        leftGbc.insets = new Insets(5, 10, 5, 10);
+        leftGbc.fill = GridBagConstraints.HORIZONTAL;
+        leftGbc.anchor = GridBagConstraints.WEST;
+        leftGbc.weightx = 0.4;
         
-        // Section: Personal Information
-        addSectionTitle(panel, gbc, row++, "Personal Information");
+        int leftRow = 0;
         
         // Name
-        addFormField(panel, gbc, row++, "Full Name:");
-        nameField = new JTextField(30);
-        gbc.gridx = 1;
-        panel.add(nameField, gbc);
+        addCompactField(leftFields, leftGbc, leftRow++, "Full Name:");
+        nameField = createStyledTextField(25);
+        leftGbc.gridx = 1;
+        leftFields.add(nameField, leftGbc);
         
         // Phone
-        addFormField(panel, gbc, row++, "Phone Number:");
-        phoneField = new JTextField(30);
-        gbc.gridx = 1;
-        panel.add(phoneField, gbc);
+        addCompactField(leftFields, leftGbc, leftRow++, "Phone Number:");
+        phoneField = createStyledTextField(25);
+        leftGbc.gridx = 1;
+        leftFields.add(phoneField, leftGbc);
         
         // Email
-        addFormField(panel, gbc, row++, "Email Address:");
-        emailField = new JTextField(30);
-        gbc.gridx = 1;
-        panel.add(emailField, gbc);
+        addCompactField(leftFields, leftGbc, leftRow++, "Email Address:");
+        emailField = createStyledTextField(25);
+        leftGbc.gridx = 1;
+        leftFields.add(emailField, leftGbc);
+        
+        // Password
+        addCompactField(leftFields, leftGbc, leftRow++, "Password:");
+        passwordField = createStyledPasswordField(25);
+        leftGbc.gridx = 1;
+        leftFields.add(passwordField, leftGbc);
+        
+        // Confirm Password
+        addCompactField(leftFields, leftGbc, leftRow++, "Confirm Password:");
+        confirmPasswordField = createStyledPasswordField(25);
+        leftGbc.gridx = 1;
+        leftFields.add(confirmPasswordField, leftGbc);
         
         // Location
-        addFormField(panel, gbc, row++, "Borehole Location:");
-        locationField = new JTextField(30);
-        gbc.gridx = 1;
-        panel.add(locationField, gbc);
+        addCompactField(leftFields, leftGbc, leftRow++, "Borehole Location:");
+        locationField = createStyledTextField(25);
+        leftGbc.gridx = 1;
+        leftFields.add(locationField, leftGbc);
         
-        // Spacing
-        gbc.gridx = 0;
-        gbc.gridy = row++;
-        gbc.gridwidth = 2;
-        panel.add(Box.createVerticalStrut(20), gbc);
-        gbc.gridwidth = 1;
+        leftPanel.add(leftFields, BorderLayout.CENTER);
         
-        // Section: Borehole Specifications
-        addSectionTitle(panel, gbc, row++, "Borehole Specifications");
+        // RIGHT COLUMN - Borehole Specifications
+        JPanel rightPanel = createStyledPanel("🔧 BOREHOLE SPECIFICATIONS");
+        JPanel rightFields = new JPanel(new GridBagLayout());
+        rightFields.setBackground(Color.WHITE);
+        GridBagConstraints rightGbc = new GridBagConstraints();
+        rightGbc.insets = new Insets(5, 10, 5, 10);
+        rightGbc.fill = GridBagConstraints.HORIZONTAL;
+        rightGbc.anchor = GridBagConstraints.WEST;
+        rightGbc.weightx = 0.4;
+        
+        int rightRow = 0;
         
         // Category
-        addFormField(panel, gbc, row++, "Project Category:");
-        categoryCombo = new JComboBox<>(new String[]{"Domestic", "Commercial", "Industrial"});
-        gbc.gridx = 1;
-        panel.add(categoryCombo, gbc);
+        addCompactField(rightFields, rightGbc, rightRow++, "Project Category:");
+        categoryCombo = createStyledComboBox(new String[]{"Domestic", "Commercial", "Industrial"});
+        rightGbc.gridx = 1;
+        rightFields.add(categoryCombo, rightGbc);
         
         // Drilling Type
-        addFormField(panel, gbc, row++, "Drilling Type:");
-        drillingTypeCombo = new JComboBox<>(new String[]{"Symmetric", "Core", "Geo-Technical"});
-        gbc.gridx = 1;
-        panel.add(drillingTypeCombo, gbc);
+        addCompactField(rightFields, rightGbc, rightRow++, "Drilling Type:");
+        drillingTypeCombo = createStyledComboBox(new String[]{"Symmetric", "Core", "Geo-Technical"});
+        rightGbc.gridx = 1;
+        rightFields.add(drillingTypeCombo, rightGbc);
         
         // Depth
-        addFormField(panel, gbc, row++, "Required Depth (meters):");
-        depthSpinner = new JSpinner(new SpinnerNumberModel(50, 1, 500, 10));
-        gbc.gridx = 1;
-        panel.add(depthSpinner, gbc);
+        addCompactField(rightFields, rightGbc, rightRow++, "Required Depth (m):");
+        depthSpinner = createStyledSpinner(50, 1, 500, 10);
+        rightGbc.gridx = 1;
+        rightFields.add(depthSpinner, rightGbc);
         
         // Pump Type
-        addFormField(panel, gbc, row++, "Pump Type:");
-        pumpTypeCombo = new JComboBox<>(new String[]{"Submersible electric pump", "Solar pump", "Hand pump"});
-        gbc.gridx = 1;
-        panel.add(pumpTypeCombo, gbc);
+        addCompactField(rightFields, rightGbc, rightRow++, "Pump Type:");
+        pumpTypeCombo = createStyledComboBox(new String[]{"Submersible electric pump", "Solar pump", "Hand pump"});
+        rightGbc.gridx = 1;
+        rightFields.add(pumpTypeCombo, rightGbc);
         
-        // Plumbing Specs
-        addFormField(panel, gbc, row++, "Plumbing Package:");
-        plumbingCombo = new JComboBox<>(new String[]{"Basic", "Standard", "Premium"});
-        gbc.gridx = 1;
-        panel.add(plumbingCombo, gbc);
+        rightPanel.add(rightFields, BorderLayout.CENTER);
+        
+        // BOTTOM LEFT - Plumbing Details
+        JPanel bottomLeftPanel = createStyledPanel("💧 PLUMBING DETAILS");
+        JPanel bottomLeftFields = new JPanel(new GridBagLayout());
+        bottomLeftFields.setBackground(Color.WHITE);
+        GridBagConstraints blGbc = new GridBagConstraints();
+        blGbc.insets = new Insets(5, 10, 5, 10);
+        blGbc.fill = GridBagConstraints.HORIZONTAL;
+        blGbc.anchor = GridBagConstraints.WEST;
+        blGbc.weightx = 0.4;
+        
+        int blRow = 0;
+        
+        // Plumbing Package
+        addCompactField(bottomLeftFields, blGbc, blRow++, "Plumbing Package:");
+        plumbingCombo = createStyledComboBox(new String[]{"Basic", "Standard", "Premium"});
+        blGbc.gridx = 1;
+        bottomLeftFields.add(plumbingCombo, blGbc);
         
         // Pipe Diameter
-        addFormField(panel, gbc, row++, "Pipe Diameter (inches):");
-        pipeDiameterSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 12, 1));
-        gbc.gridx = 1;
-        panel.add(pipeDiameterSpinner, gbc);
+        addCompactField(bottomLeftFields, blGbc, blRow++, "Pipe Diameter (in):");
+        pipeDiameterSpinner = createStyledSpinner(1, 1, 12, 1);
+        blGbc.gridx = 1;
+        bottomLeftFields.add(pipeDiameterSpinner, blGbc);
+        
+        bottomLeftPanel.add(bottomLeftFields, BorderLayout.CENTER);
+        
+        // BOTTOM RIGHT - Additional Specs
+        JPanel bottomRightPanel = createStyledPanel("📏 ADDITIONAL SPECIFICATIONS");
+        JPanel bottomRightFields = new JPanel(new GridBagLayout());
+        bottomRightFields.setBackground(Color.WHITE);
+        GridBagConstraints brGbc = new GridBagConstraints();
+        brGbc.insets = new Insets(5, 10, 5, 10);
+        brGbc.fill = GridBagConstraints.HORIZONTAL;
+        brGbc.anchor = GridBagConstraints.WEST;
+        brGbc.weightx = 0.4;
+        
+        int brRow = 0;
         
         // Pipe Length
-        addFormField(panel, gbc, row++, "Pipe Length (meters):");
-        pipeLengthSpinner = new JSpinner(new SpinnerNumberModel(50, 10, 500, 10));
-        gbc.gridx = 1;
-        panel.add(pipeLengthSpinner, gbc);
+        addCompactField(bottomRightFields, brGbc, brRow++, "Pipe Length (m):");
+        pipeLengthSpinner = createStyledSpinner(50, 10, 500, 10);
+        brGbc.gridx = 1;
+        bottomRightFields.add(pipeLengthSpinner, brGbc);
         
         // Number of Outlets
-        addFormField(panel, gbc, row++, "Number of Outlets:");
-        outletsSpinner = new JSpinner(new SpinnerNumberModel(2, 1, 20, 1));
+        addCompactField(bottomRightFields, brGbc, brRow++, "Number of Outlets:");
+        outletsSpinner = createStyledSpinner(2, 1, 20, 1);
+        brGbc.gridx = 1;
+        bottomRightFields.add(outletsSpinner, brGbc);
+        
+        bottomRightPanel.add(bottomRightFields, BorderLayout.CENTER);
+        
+        // Layout the four panels in 2x2 grid
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.5;
+        gbc.weighty = 0.5;
+        gbc.fill = GridBagConstraints.BOTH;
+        formPanel.add(leftPanel, gbc);
+        
         gbc.gridx = 1;
-        panel.add(outletsSpinner, gbc);
+        formPanel.add(rightPanel, gbc);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(bottomLeftPanel, gbc);
+        
+        gbc.gridx = 1;
+        formPanel.add(bottomRightPanel, gbc);
+        
+        mainPanel.add(formPanel, BorderLayout.CENTER);
         
         // Buttons
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(30, 10, 10, 10);
-        
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 8));
         buttonPanel.setBackground(Color.WHITE);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
         
-        JButton submitButton = new JButton("Submit Registration");
-        submitButton.setBackground(new Color(76, 175, 80));
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        
+        JButton submitButton = new JButton("✓ Submit Registration");
+        submitButton.setBackground(new Color(46, 204, 113));
         submitButton.setForeground(Color.WHITE);
         submitButton.setOpaque(true);
         submitButton.setBorderPainted(false);
         submitButton.setFocusPainted(false);
-        submitButton.setFont(new Font("Arial", Font.BOLD, 14));
-        submitButton.setPreferredSize(new Dimension(200, 40));
+        submitButton.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        submitButton.setPreferredSize(new Dimension(220, 48));
+        submitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         submitButton.addActionListener(e -> handleRegistration());
         
-        JButton backButton = new JButton("Back");
-        backButton.setBackground(new Color(158, 158, 158));
+        // Add hover effect
+        submitButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                submitButton.setBackground(new Color(39, 174, 96));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                submitButton.setBackground(new Color(46, 204, 113));
+            }
+        });
+        
+        JButton backButton = new JButton("← Back");
+        backButton.setBackground(new Color(149, 165, 166));
         backButton.setForeground(Color.WHITE);
         backButton.setOpaque(true);
         backButton.setBorderPainted(false);
         backButton.setFocusPainted(false);
-        backButton.setFont(new Font("Arial", Font.BOLD, 14));
-        backButton.setPreferredSize(new Dimension(120, 40));
+        backButton.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        backButton.setPreferredSize(new Dimension(130, 48));
+        backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         backButton.addActionListener(e -> goBack());
+        
+        // Add hover effect
+        backButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                backButton.setBackground(new Color(127, 140, 141));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                backButton.setBackground(new Color(149, 165, 166));
+            }
+        });
         
         buttonPanel.add(submitButton);
         buttonPanel.add(backButton);
         
-        panel.add(buttonPanel, gbc);
+        return mainPanel;
+    }
+    
+    private JPanel createStyledPanel(String title) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(52, 152, 219), 2),
+            BorderFactory.createEmptyBorder(8, 10, 10, 10)
+        ));
+        
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        titleLabel.setForeground(new Color(52, 73, 94));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(4, 8, 8, 8));
+        panel.add(titleLabel, BorderLayout.NORTH);
         
         return panel;
     }
     
-    private void addSectionTitle(JPanel panel, GridBagConstraints gbc, int row, String title) {
+    private void addCompactField(JPanel panel, GridBagConstraints gbc, int row, String label) {
         gbc.gridx = 0;
         gbc.gridy = row;
-        gbc.gridwidth = 2;
-        JLabel sectionLabel = new JLabel(title);
-        sectionLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        sectionLabel.setForeground(new Color(25, 118, 210));
-        panel.add(sectionLabel, gbc);
-        gbc.gridwidth = 1;
+        gbc.weightx = 0.4;
+        JLabel lbl = new JLabel(label);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lbl.setForeground(new Color(44, 62, 80));
+        lbl.setPreferredSize(new Dimension(180, 34));
+        panel.add(lbl, gbc);
+        gbc.weightx = 0.6;
     }
     
-    private void addFormField(JPanel panel, GridBagConstraints gbc, int row, String label) {
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        JLabel lbl = new JLabel(label);
-        lbl.setFont(new Font("Arial", Font.BOLD, 13));
-        panel.add(lbl, gbc);
+    private JTextField createStyledTextField(int columns) {
+        JTextField field = new JTextField(columns);
+        field.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        field.setPreferredSize(new Dimension(300, 38));
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(52, 152, 219), 2),
+            BorderFactory.createEmptyBorder(6, 10, 6, 10)
+        ));
+        return field;
+    }
+    
+    private JPasswordField createStyledPasswordField(int columns) {
+        JPasswordField field = new JPasswordField(columns);
+        field.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        field.setPreferredSize(new Dimension(300, 38));
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(52, 152, 219), 2),
+            BorderFactory.createEmptyBorder(6, 10, 6, 10)
+        ));
+        return field;
+    }
+    
+    private JComboBox<String> createStyledComboBox(String[] items) {
+        JComboBox<String> combo = new JComboBox<>(items);
+        combo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        combo.setPreferredSize(new Dimension(300, 38));
+        combo.setBackground(Color.WHITE);
+        return combo;
+    }
+    
+    private JSpinner createStyledSpinner(int initial, int min, int max, int step) {
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel(initial, min, max, step));
+        spinner.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        spinner.setPreferredSize(new Dimension(300, 38));
+        ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        return spinner;
     }
     
     private void handleRegistration() {
@@ -237,6 +395,34 @@ public class ClientRegistrationForm extends JFrame {
             return;
         }
         
+        // Validate password
+        String password = new String(passwordField.getPassword());
+        String confirmPassword = new String(confirmPasswordField.getPassword());
+        
+        if (password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, 
+                "Please enter a password", 
+                "Validation Error", JOptionPane.ERROR_MESSAGE);
+            passwordField.requestFocus();
+            return;
+        }
+        
+        if (password.length() < 6) {
+            JOptionPane.showMessageDialog(this, 
+                "Password must be at least 6 characters long", 
+                "Validation Error", JOptionPane.ERROR_MESSAGE);
+            passwordField.requestFocus();
+            return;
+        }
+        
+        if (!password.equals(confirmPassword)) {
+            JOptionPane.showMessageDialog(this, 
+                "Passwords do not match", 
+                "Validation Error", JOptionPane.ERROR_MESSAGE);
+            confirmPasswordField.requestFocus();
+            return;
+        }
+        
         try {
             // Create client with generated ID
             String clientId = IDGenerator.generateClientId();
@@ -245,6 +431,7 @@ public class ClientRegistrationForm extends JFrame {
             client.setName(nameField.getText().trim());
             client.setPhone(phoneField.getText().trim());
             client.setEmail(emailField.getText().trim());
+            client.setPassword(password);
             client.setAddress(locationField.getText().trim()); // Use address field
             client.setBoreholeLocation(locationField.getText().trim());
             client.setClientCategory((String) categoryCombo.getSelectedItem());
@@ -266,9 +453,8 @@ public class ClientRegistrationForm extends JFrame {
             if (success) {
                 JOptionPane.showMessageDialog(this, 
                     "Registration Successful!\n\n" +
-                    "Your Client ID: " + clientId + "\n" +
-                    "Phone Number: " + phoneField.getText().trim() + "\n\n" +
-                    "Please save these credentials to login and view your project details.\n" +
+                    "Your Email: " + emailField.getText().trim() + "\n\n" +
+                    "Please use your email and password to login.\n" +
                     "Total Estimated Cost: KES " + String.format("%,.2f", client.getTotalCost()), 
                     "Success", JOptionPane.INFORMATION_MESSAGE);
                 

@@ -9,9 +9,16 @@ public class Main {
         try {  
     
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+            try {
+                DatabaseInitializer.initialize();
+                System.out.println("Database initialized successfully!");
+            } catch (Exception dbError) {
+                System.err.println("Warning: Database initialization failed: " + dbError.getMessage());
+                System.err.println("Application will continue with limited functionality.");
+            }
             
-            DatabaseInitializer.initialize();
-            
+            // Always show the UI
             SwingUtilities.invokeLater(() -> {
                 LoginUI loginUI = new LoginUI();
                 loginUI.setVisible(true);

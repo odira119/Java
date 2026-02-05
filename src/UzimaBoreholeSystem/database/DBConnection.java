@@ -10,11 +10,6 @@ public class DBConnection {
     private static final String PASSWORD = "odira2005";
     
     private static Connection connection = null;
-    
-    /**
-     * Get database connection (singleton pattern)
-     * @return Connection object
-     */
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
@@ -31,10 +26,7 @@ public class DBConnection {
         }
         return connection;
     }
-    
-    /**
-     * Close database connection
-     */
+
     public static void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {

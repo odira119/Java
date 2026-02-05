@@ -34,6 +34,15 @@ public class AuthService {
         return null;
     }
     
+    // Authenticate client using email and password
+    public Client authenticateClientByEmail(String email, String password) {
+        Client client = clientService.getClientByEmail(email);
+        if (client != null && client.getPassword() != null && client.getPassword().equals(password)) {
+            return client;
+        }
+        return null;
+    }
+    
     //Check if client ID exists
     public boolean clientIdExists(String clientId) {
         String sql = "SELECT COUNT(*) FROM clients WHERE client_id = ?";

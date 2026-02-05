@@ -10,12 +10,12 @@ public class ClientService {
     
     // Add new client to database
     public boolean addClient(Client client) {
-        String sql = "INSERT INTO clients (client_id, name, address, phone, email, client_category, " +
+        String sql = "INSERT INTO clients (client_id, name, address, phone, email, password, client_category, " +
             "borehole_location, depth_or_height, pump_type, pipe_type, pipe_diameter, " +
             "pipe_length, number_of_outlets, drilling_type, survey_fee, local_authority_fee, " +
             "drilling_fee, pump_installation_fee, plumbing_fee, depth_charge, subtotal, " +
             "tax_paid, total_cost, payment_status) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -25,25 +25,26 @@ public class ClientService {
             ps.setString(3, client.getAddress());
             ps.setString(4, client.getPhone());
             ps.setString(5, client.getEmail());
-            ps.setString(6, client.getClientCategory());
-            ps.setString(7, client.getBoreholeLocation());
-            ps.setInt(8, client.getDepthOrHeight());
-            ps.setString(9, client.getPumpType());
-            ps.setString(10, client.getPipeType());
-            ps.setInt(11, client.getPipeDiameter());
-            ps.setInt(12, client.getPipeLength());
-            ps.setInt(13, client.getNumberOfOutlets());
-            ps.setString(14, client.getDrillingType());
-            ps.setDouble(15, client.getSurveyFee());
-            ps.setDouble(16, client.getLocalAuthorityFee());
-            ps.setDouble(17, client.getDrillingFee());
-            ps.setDouble(18, client.getPumpInstallationFee());
-            ps.setDouble(19, client.getPlumbingFee());
-            ps.setDouble(20, client.getDepthCharge());
-            ps.setDouble(21, client.getSubtotal());
-            ps.setDouble(22, client.getTaxPaid());
-            ps.setDouble(23, client.getTotalCost());
-            ps.setString(24, client.getPaymentStatus());
+            ps.setString(6, client.getPassword());
+            ps.setString(7, client.getClientCategory());
+            ps.setString(8, client.getBoreholeLocation());
+            ps.setInt(9, client.getDepthOrHeight());
+            ps.setString(10, client.getPumpType());
+            ps.setString(11, client.getPipeType());
+            ps.setInt(12, client.getPipeDiameter());
+            ps.setInt(13, client.getPipeLength());
+            ps.setInt(14, client.getNumberOfOutlets());
+            ps.setString(15, client.getDrillingType());
+            ps.setDouble(16, client.getSurveyFee());
+            ps.setDouble(17, client.getLocalAuthorityFee());
+            ps.setDouble(18, client.getDrillingFee());
+            ps.setDouble(19, client.getPumpInstallationFee());
+            ps.setDouble(20, client.getPlumbingFee());
+            ps.setDouble(21, client.getDepthCharge());
+            ps.setDouble(22, client.getSubtotal());
+            ps.setDouble(23, client.getTaxPaid());
+            ps.setDouble(24, client.getTotalCost());
+            ps.setString(25, client.getPaymentStatus());
             
             int rows = ps.executeUpdate();
             return rows > 0;
@@ -126,6 +127,26 @@ public class ClientService {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, clientId);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                return extractClientFromResultSet(rs);
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    // Get client by email
+    public Client getClientByEmail(String email) {
+        String sql = "SELECT * FROM clients WHERE email = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             
             if (rs.next()) {
@@ -233,6 +254,14 @@ public class ClientService {
         client.setAddress(rs.getString("address"));
         client.setPhone(rs.getString("phone"));
         client.setEmail(rs.getString("email"));
+        
+        // Try to get password if column exists
+        try {
+            client.setPassword(rs.getString("password"));
+        } catch (SQLException e) {
+            // Password column may not exist in older database schemas
+        }
+        
         client.setClientCategory(rs.getString("client_category"));
         client.setBoreholeLocation(rs.getString("borehole_location"));
         client.setDepthOrHeight(rs.getInt("depth_or_height"));
